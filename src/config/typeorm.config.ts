@@ -4,7 +4,6 @@ import  enviroment   from "./enviroments.config";
 
 export async function connect() { 
 
-    console.log("ffffffffffffffffffffffffffffffffff");
     await createConnection({
         type: 'mysql',
         host: enviroment.databaseHost,
