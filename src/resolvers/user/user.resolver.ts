@@ -12,14 +12,14 @@ import {
     Authorized
 } from "type-graphql";
 import { hash, compare } from "bcryptjs";
-import { User } from "../entities/user";
+import { User } from "../../entities/user";
 
-import enviroment from "../config/enviroments.config";
+import enviroment from "../../config/enviroments.config";
 import { sign } from "jsonwebtoken";
 
-import { isAuthenticated } from "../middleware/is-authenticated";
-import { Context } from "../interfaces/context.interface";
-import { RolesTypes } from "../entities/user"
+import { isAuthenticated } from "../../middleware/is-authenticated";
+import { Context } from "../../interfaces/context.interface";
+import { RolesTypes } from "../../entities/user"
 
 @ObjectType()
 class LoginResponse {
@@ -35,7 +35,7 @@ class UserInput {
     @Field()
     notes!: string;
 
-    @Field(type => RolesTypes)
+    @Field(() => RolesTypes)
     role!: RolesTypes;
 }
 

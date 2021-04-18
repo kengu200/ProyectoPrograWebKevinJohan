@@ -24,20 +24,17 @@ export const isAuthorizated: AuthChecker<Context> = ({ context }, roles) => {
     }
 
     const user = context.user;
-    if (roles.length === 0) {
-        // if `@Authorized()`, check only if user exists
-        return user !== undefined;
-    }
-    // there are some roles defined now
-
     if (!user) {
-        // and if no user, restrict access
         return false;
     }
-    if (roles.includes(user.role)) {
-        // grant access if the roles overlap
+
+    if (isAuthorizedWithoutRoles(roles) || roles.includes(user.role)) {
         return true;
     }
-    // no roles matched, restrict access
+    
     return false;
 };
+
+function isAuthorizedWithoutRoles(roles: string[]){
+    return roles.length === 0;
+}

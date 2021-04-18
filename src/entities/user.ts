@@ -1,11 +1,20 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
+import { Entity, JoinColumn, PrimaryGeneratedColumn, Column, BaseEntity, OneToOne, CreateDateColumn, OneToMany} from "typeorm";
 import { ObjectType, Field, ID, Authorized, registerEnumType } from "type-graphql";
+import {Service} from "./services";
+import {Review} from "./review";
 
 export enum RolesTypes {
     NONE = "",
     ADMIN = "ADMIN",
     MODERATOR = "MODERATOR",
     BASIC = "BASIC"
+}
+
+export enum State{
+    ACTIVE = "ACTIVE",
+    INACTIVE = "INACTIVE",
+    BLOCKED = "BLOCKED",
+    UNVERIFIED = "UNVERIFIED"
 }
 
 registerEnumType(RolesTypes, {
@@ -37,20 +46,37 @@ export class User extends BaseEntity {
     @Column("text", { nullable: true })
     name!: string;
 
-    @Authorized([RolesTypes.ADMIN, RolesTypes.MODERATOR])
-    @Field(() => String)
-    @Column("text", { nullable: true })
-    notes!: string;
-
     @Field(() => String)
     @Column("text", { nullable: true })
     email!: string;
 
+    @Field(() => String)
     @Column("text", { nullable: true })
     password!: string;
 
     @Authorized(RolesTypes.ADMIN)
-    @Field(type => RolesTypes)
+    @Field(() => RolesTypes)
     @Column("text", { nullable: true })
     role!: RolesTypes;
+
+    @Field(()=>[Review])
+    @JoinColumn()
+    @OneToMany(() => Review, (review: any) => review.creatorUser)
+    reviews!: Review[];
+
+    @Field(() => Service)
+    @JoinColumn()
+    @OneToOne(() => Service)
+    service!: Service;
+    
+    @Field(()=> String)
+    @Column()
+    @CreateDateColumn({type:'timestamp'})
+    createdAt!:string;
+
+    @Field(()=> String)
+    @Column()
+    @CreateDateColumn({type:'timestamp'})
+    updateAt!:string;
+
 }
