@@ -1,4 +1,4 @@
-import {Entity, Column, PrimaryGeneratedColumn,BaseEntity, CreateDateColumn, OneToOne, OneToMany} from 'typeorm';
+import {Entity, Column, PrimaryGeneratedColumn,BaseEntity, CreateDateColumn, OneToOne, OneToMany, JoinColumn} from 'typeorm';
 import { Field, Int, ObjectType } from "type-graphql";
 import {Review} from "./review";
 import {Image} from "./images";
@@ -18,18 +18,21 @@ export class Service extends BaseEntity{
     @Column()
     description!:string;
 
-    @Field()
+    @Field(()=>Review)
+    @JoinColumn()
     @OneToOne(() => Review)
     review!: Review;
 
+    @Field(()=>[Image])
+    @JoinColumn()
     @OneToMany(() => Image, (image: any) => image.images)
     images!: Image[];
 
-    @Field(()=> String)
+    @Field()
     @CreateDateColumn({type:'timestamp'})
     createdAt!:string;
 
-    @Field(()=> String)
+    @Field()
     @CreateDateColumn({type:'timestamp'})
     updatedAt!:string;
 }

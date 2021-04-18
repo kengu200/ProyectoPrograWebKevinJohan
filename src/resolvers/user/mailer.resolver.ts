@@ -27,7 +27,7 @@ export class GMailService {
         }
 
         this._transporter.sendMail(
-            options, (error, info) => {
+            options, (error: any, info: any) => {
                 if (error) {
                     return console.log(`error: ${error}`);
                 }

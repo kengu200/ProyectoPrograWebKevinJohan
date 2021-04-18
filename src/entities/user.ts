@@ -1,35 +1,48 @@
-import { Entity, JoinColumn, PrimaryGeneratedColumn, Column, BaseEntity, OneToOne, CreateDateColumn, OneToMany} from "typeorm";
+import { Entity, JoinColumn, PrimaryGeneratedColumn, Column, BaseEntity, OneToOne, CreateDateColumn, OneToMany, ManyToMany, JoinTable} from "typeorm";
 import { ObjectType, Field, ID, Authorized, registerEnumType } from "type-graphql";
 import {Service} from "./services";
 import {Review} from "./review";
 
 export enum RolesTypes {
-    NONE = "",
     ADMIN = "ADMIN",
-    MODERATOR = "MODERATOR",
-    BASIC = "BASIC"
+    CLIENT = "CLIENT",
+    OFFERER = "OFFERER"
 }
 
 export enum State{
     ACTIVE = "ACTIVE",
     INACTIVE = "INACTIVE",
-    BLOCKED = "BLOCKED",
-    UNVERIFIED = "UNVERIFIED"
+    BLOCKED = "BLOCKED"
 }
 
 registerEnumType(RolesTypes, {
     name: "RolesTypes",
     description: "Roles types of the application",
     valuesConfig: {
-        BASIC: {
-            description: "Basic user role",
-            deprecationReason: "Replaced with @Authorized() for simplicity",
-        },
-        MODERATOR: {
-            description: "Moderator user role",
+        CLIENT: {
+            description: "Client user role",
         },
         ADMIN: {
             description: "Admin user role",
+        },
+        OFFERER: {
+            description: "Offerer user role",
+        },
+    },
+});
+
+registerEnumType(State, {
+    name: "State",
+    description: "Possible states for users",
+    valuesConfig: {
+        ACTIVE: {
+            description: "Active user state",
+        },
+        INACTIVE: {
+            description: "Inactive user state",
+        },
+        BLOCKED: {
+            description: "Blocked user state",
         },
     },
 });
@@ -42,15 +55,15 @@ export class User extends BaseEntity {
     id!: number;
 
     @Authorized()
-    @Field(() => String)
+    @Field()
     @Column("text", { nullable: true })
     name!: string;
 
-    @Field(() => String)
+    @Field()
     @Column("text", { nullable: true })
     email!: string;
 
-    @Field(() => String)
+    @Field()
     @Column("text", { nullable: true })
     password!: string;
 
@@ -69,12 +82,20 @@ export class User extends BaseEntity {
     @OneToOne(() => Service)
     service!: Service;
     
-    @Field(()=> String)
+    @ManyToMany(() => User)
+    @JoinTable()
+    friends!: User[];
+
+    @Field(() => State)
+    @Column()
+    state!: State;
+
+    @Field()
     @Column()
     @CreateDateColumn({type:'timestamp'})
     createdAt!:string;
 
-    @Field(()=> String)
+    @Field()
     @Column()
     @CreateDateColumn({type:'timestamp'})
     updateAt!:string;

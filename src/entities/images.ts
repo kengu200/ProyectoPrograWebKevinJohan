@@ -1,27 +1,32 @@
-import {Entity, JoinColumn,Column, PrimaryGeneratedColumn,BaseEntity, CreateDateColumn, ManyToOne} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Field, Int, ObjectType } from "type-graphql";
-import {Service} from "./services";
+import { Service } from "./services";
 
 @ObjectType()
 @Entity()
-export class Image extends BaseEntity{
+export class Image extends BaseEntity {
     @Field()
     @PrimaryGeneratedColumn()
-    id!:number;
-    
+    id!: number;
+
     @Field()
     @Column()
-    url!:string;
+    title!: string;
 
+    @Field()
+    @Column()
+    url!: string;
+
+    @Field(() => Service)
     @JoinColumn()
     @ManyToOne(() => Service, (service: any) => service.images)
     service!: Service;
 
-    @Field(()=> String)
-    @CreateDateColumn({type:'timestamp'})
-    createdAt!:string;
+    @Field()
+    @CreateDateColumn({ type: 'timestamp' })
+    createdAt!: string;
 
-    @Field(()=> String)
-    @CreateDateColumn({type:'timestamp'})
-    updatedAt!:string;
+    @Field()
+    @CreateDateColumn({ type: 'timestamp' })
+    updatedAt!: string;
 }
