@@ -1,4 +1,4 @@
-import {Entity, Column, PrimaryGeneratedColumn,BaseEntity, CreateDateColumn, ManyToOne} from 'typeorm';
+import {Entity, JoinColumn,Column, PrimaryGeneratedColumn,BaseEntity, CreateDateColumn, ManyToOne} from 'typeorm';
 import { Field, Int, ObjectType } from "type-graphql";
 import {Service} from "./services";
 
@@ -13,7 +13,7 @@ export class Image extends BaseEntity{
     @Column()
     url!:string;
 
-    @Column()
+    @JoinColumn()
     @ManyToOne(() => Service, (service: any) => service.images)
     service!: Service;
 

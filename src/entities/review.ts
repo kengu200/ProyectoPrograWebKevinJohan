@@ -1,11 +1,27 @@
-import {Entity, Column, PrimaryGeneratedColumn,BaseEntity, CreateDateColumn, ManyToOne} from 'typeorm';
-import { Field, Int, ObjectType } from "type-graphql";
+import {Entity,JoinColumn, Column, PrimaryGeneratedColumn,BaseEntity, CreateDateColumn, ManyToOne} from 'typeorm';
+import { Field, Int, ObjectType, registerEnumType } from "type-graphql";
 import {User} from "./user";
+
 
 export enum State{
     ACTIVE = "ACTIVE",
     INACTIVE = "INACTIVE",
 }
+
+registerEnumType(State, {
+    name: "State",
+    description: "Reviews state",
+    valuesConfig: {
+        ACTIVE: {
+            description: "Basic user role",
+        },
+        INACTIVE: {
+            description: "Moderator user role",
+        }
+    },
+});
+
+
 @ObjectType()
 @Entity()
 export class Review extends BaseEntity{
@@ -21,7 +37,7 @@ export class Review extends BaseEntity{
     @Column("int",{default:0})
     rating!:number;
 
-    @Column()
+    @JoinColumn()
     @ManyToOne(() => User, (user: any) => user.reviews)
     creatorUser!: User;
     

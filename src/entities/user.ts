@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToOne, CreateDateColumn, OneToMany} from "typeorm";
+import { Entity, JoinColumn, PrimaryGeneratedColumn, Column, BaseEntity, OneToOne, CreateDateColumn, OneToMany} from "typeorm";
 import { ObjectType, Field, ID, Authorized, registerEnumType } from "type-graphql";
 import {Service} from "./services";
 import {Review} from "./review";
@@ -59,13 +59,13 @@ export class User extends BaseEntity {
     @Column("text", { nullable: true })
     role!: RolesTypes;
 
-    @Field()
-    @Column()
+    @Field(()=>[Review])
+    @JoinColumn()
     @OneToMany(() => Review, (review: any) => review.creatorUser)
     reviews!: Review[];
 
     @Field(() => Service)
-    @Column()
+    @JoinColumn()
     @OneToOne(() => Service)
     service!: Service;
     
