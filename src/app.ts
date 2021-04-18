@@ -5,7 +5,7 @@ import { buildSchema } from "type-graphql"
 
 import { PingResolver } from "./resolvers/ping.resolver";
 import { ProductResolver } from "./resolvers/product.resolver";
-import { UserResolver } from './resolvers/user.resolver';
+import { UserResolver } from './resolvers/user/user.resolver';
 import { isAuthorizated } from "./middleware/is-authorizated";
 export async function startServer() {
     const app = express();
