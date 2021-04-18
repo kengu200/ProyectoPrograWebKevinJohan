@@ -3,12 +3,9 @@ import {
     Query,
     Mutation,
     Arg,
-    ObjectType,
     UseMiddleware,
-    Field,
     Ctx,
     Int,
-    InputType,
     Authorized
 } from "type-graphql";
 import { hash, compare } from "bcryptjs";
@@ -19,26 +16,8 @@ import { sign } from "jsonwebtoken";
 
 import { isAuthenticated } from "../../middleware/is-authenticated";
 import { Context } from "../../interfaces/context.interface";
-import { RolesTypes } from "../../entities/user"
-
-@ObjectType()
-class LoginResponse {
-    @Field()
-    accessToken?: string;
-}
-
-@InputType({ description: "Editable user information" })
-class UserInput {
-    @Field({ nullable: true })
-    name?: string
-
-    @Field()
-    notes!: string;
-
-    @Field(() => RolesTypes)
-    role!: RolesTypes;
-}
-
+import { UserInput } from "./user.input"
+import { LoginResponse } from "./user.response"
 
 @Resolver()
 export class UserResolver {
@@ -59,14 +38,14 @@ export class UserResolver {
 
     @Query(() => String)
     @UseMiddleware(isAuthenticated)
-    async Me(@Ctx() { user }: Context) {
+    async getId(@Ctx() { user }: Context) {
         console.log(JSON.stringify(user));
 
         return `Your user id : ${user!.id}`;
     }
 
     @Mutation(() => Boolean)
-    async Register(
+    async registerUser(
         @Arg("name") name: string,
         @Arg("email") email: string,
         @Arg("password") password: string
@@ -88,7 +67,7 @@ export class UserResolver {
     }
 
     @Mutation(() => LoginResponse)
-    async Login(@Arg("email") email: string, @Arg("password") password: string) {
+    async loginUser(@Arg("email") email: string, @Arg("password") password: string) {
         const user = await User.findOne({ where: { email } });
 
         if (!user) {
