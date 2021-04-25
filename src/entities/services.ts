@@ -30,9 +30,9 @@ export class Service extends BaseEntity{
 
     @Field()
     @CreateDateColumn({type:'timestamp'})
-    createdAt!:string;
+    createdAt?:string;
 
     @Field()
     @CreateDateColumn({type:'timestamp'})
-    updatedAt!:string;
+    updatedAt?:string;
 }
