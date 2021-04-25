@@ -1,4 +1,4 @@
-import { Entity, JoinColumn, PrimaryGeneratedColumn, Column, BaseEntity, OneToOne, CreateDateColumn, OneToMany} from "typeorm";
+import { Entity, JoinColumn, PrimaryGeneratedColumn, Column, BaseEntity, OneToOne, CreateDateColumn, OneToMany, JoinTable, ManyToMany} from "typeorm";
 import { ObjectType, Field, ID, Authorized, registerEnumType } from "type-graphql";
 import {Service} from "./services";
 import {Review} from "./review";
@@ -61,6 +61,11 @@ export class User extends BaseEntity {
     @OneToOne(() => Service)
     service!: Service;
     
+    @Field(() => User)
+    @JoinTable()
+    @ManyToMany(() => User)
+    friends!: User;
+    
     @Field(()=> String)
     @Column()
     @CreateDateColumn({type:'timestamp'})
@@ -70,5 +75,4 @@ export class User extends BaseEntity {
     @Column()
     @CreateDateColumn({type:'timestamp'})
     updateAt!:string;
-
 }

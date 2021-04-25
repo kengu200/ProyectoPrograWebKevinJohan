@@ -18,10 +18,10 @@ export class Service extends BaseEntity{
     @Column()
     description!:string;
 
-    @Field(()=>Review)
+    @Field(()=>[Review])
     @JoinColumn()
-    @OneToOne(() => Review)
-    review!: Review;
+    @OneToMany(() => Review, (review: any) => review.images)
+    reviews!: Review[];
 
     @Field(()=>[Image])
     @JoinColumn()

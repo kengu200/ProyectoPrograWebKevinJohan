@@ -1,6 +1,7 @@
 import { Entity, JoinColumn, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, ManyToOne } from 'typeorm';
 import { Field, Int, ObjectType, registerEnumType } from "type-graphql";
 import { User } from "./user";
+import { Service } from "./services";
 
 
 export enum StateReviews {
@@ -41,6 +42,11 @@ export class Review extends BaseEntity {
     @JoinColumn()
     @ManyToOne(() => User, (user: any) => user.reviews)
     creatorUser!: User;
+
+    @Field(() => Service)
+    @JoinColumn()
+    @ManyToOne(() => Service, (service: any) => service.review)
+    service!: Service;
 
     @Field(() => StateReviews)
     @Column()
