@@ -21,18 +21,18 @@ export class Service extends BaseEntity{
     @Field(()=>[Review])
     @JoinColumn()
     @OneToMany(() => Review, (review: any) => review.images)
-    reviews!: Review[];
+    reviews?: Review[];
 
     @Field(()=>[Image])
     @JoinColumn()
     @OneToMany(() => Image, (image: any) => image.images)
-    images!: Image[];
+    images?: Image[];
 
     @Field()
     @CreateDateColumn({type:'timestamp'})
-    createdAt!:string;
+    createdAt?:string;
 
     @Field()
     @CreateDateColumn({type:'timestamp'})
-    updatedAt!:string;
+    updatedAt?:string;
 }

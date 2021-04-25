@@ -25,7 +25,7 @@ export class UserResolver {
     async users() {
         return User.find();
     }
-    @Authorized("ADMIN")
+    @UseMiddleware(isAuthenticated)
     @Mutation(() => User)
     async updateUser(
         @Arg("id", () => Int) id: number,
@@ -39,8 +39,6 @@ export class UserResolver {
     @Query(() => String)
     @UseMiddleware(isAuthenticated)
     async getId(@Ctx() { user }: Context) {
-        console.log(JSON.stringify(user));
-
         return `Your user id : ${user!.id}`;
     }
 
@@ -58,11 +56,8 @@ export class UserResolver {
                 password: hashedPassword
             });
         } catch (err) {
-            console.log(err);
             return false;
         }
-
-
         return true;
     }
 
@@ -100,11 +95,10 @@ export class UserResolver {
             await User.update({
                 ...user
             },
-            {
-                password: newPassword
-            });
+                {
+                    password: newPassword
+                });
         } catch (err) {
-            console.log(err);
             return false;
         }
 
