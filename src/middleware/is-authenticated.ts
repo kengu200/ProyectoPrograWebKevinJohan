@@ -12,14 +12,15 @@ export const isAuthenticated: MiddlewareFn<Context> = ({ context }, next) => {
   if (!authorization) {
     throw new Error("Not authenticated");
   }
-  if (authorization.indexOf("bearer ", 0) < 0) {
-    throw new Error("Not authenticated");
-  }
+
   try {
     const token = authorization.replace(bearer_prefix, "");
-    const payload = verify(token, enviroment.jwtSecretKey ?? '');
-    context.user = payload as User;
+    console.log(token);
+    const payload:any = verify(token, enviroment.jwtSecretKey ?? '');
+    context.user = payload.user as User;
+    console.log(payload);
   } catch (err) {
+    console.log(err);
     throw new Error("Not authenticated");
   }
   return next();
