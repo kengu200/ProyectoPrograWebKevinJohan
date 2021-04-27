@@ -19,6 +19,7 @@ import { sign } from "jsonwebtoken";
 import { isAuthenticated } from "../../middleware/is-authenticated";
 import { Context } from "../../interfaces/context.interface";
 import { ServiceInput } from "./service.input"
+import { InsertResult } from "typeorm";
 
 @Resolver()
 export class ServiceResolver {
@@ -33,10 +34,14 @@ export class ServiceResolver {
         @Ctx() { user }: Context,
         @Arg("data", () => ServiceInput) data: ServiceInput
     ) {
-        const id = user!.service;
-        await Service.update(id, data);
-        const dataUpdated = await Service.findOne(id);
-        return dataUpdated;
+        try {
+            await Service.update({ id: user?.service }, data);
+            const dataUpdated = await Service.findOne(user?.service);
+            return dataUpdated;
+        } catch (error) {
+            return false;
+        }
+
     }
 
     @Query(() => Service)
@@ -47,23 +52,24 @@ export class ServiceResolver {
         return Service.findOne(user?.service);
     }
 
-    @UseMiddleware(isAuthenticated)
-    @Mutation(() => Boolean)
+    // @UseMiddleware(isAuthenticated)
+    @Mutation(() => String)
     async registerService(
-        @Arg("data", () => ServiceInput) data: ServiceInput,
+        @Arg("serviceData", () => ServiceInput) data: ServiceInput,
         @Ctx() { user }: Context
     ) {
         try {
 
-            const newService = await Service.insert({
+            var newService = new InsertResult();
+            newService = await Service.insert({
                 ...data
             });
-            
-            const id = user!.id;
-            await User.update({ id }, { service: newService.identifiers[0] });
+
+            const idNewService = newService.identifiers[0];
+            await User.update({ id: user?.id }, { service: Int.parseValue(idNewService) });
 
         } catch (err) {
-            return false;
+            return "false";
         }
 
 

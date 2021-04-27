@@ -4,12 +4,12 @@ import {Service} from "./services";
 import {Review} from "./review";
 
 export enum RolesTypes {
-    NONE = "",
+    NONE = "NONE",
     ADMIN = "ADMIN"
 
 }
 
-export enum State{
+export enum UserStatusTypes{
     ACTIVE = "ACTIVE",
     INACTIVE = "INACTIVE",
     BLOCKED = "BLOCKED",
@@ -23,6 +23,18 @@ registerEnumType(RolesTypes, {
         ADMIN: {
             description: "Admin user role",
         },
+        NONE :{description:"NONE"},
+    },
+});
+
+registerEnumType(UserStatusTypes, {
+    name: "UserStatusTypes",
+    description: "Roles types of the application",
+    valuesConfig: {
+        ACTIVE : {description:"ACTIVE"},
+        INACTIVE :{description:"INACTIVE"},
+        BLOCKED : {description: "BLOCKED"},
+        UNVERIFIED :{description: "UNVERIFIED"},
     },
 });
 
@@ -46,6 +58,15 @@ export class User extends BaseEntity {
     @Column("text", { nullable: true })
     password!: string;
 
+    
+    @Field()
+    @Column("text", { nullable: true })
+    code?: string;
+
+    @Field()
+    @Column("text", { nullable: true })
+    expirationDate?: number;
+
     @Authorized(RolesTypes.ADMIN)
     @Field(() => RolesTypes)
     @Column("text", { nullable: true })
@@ -54,25 +75,29 @@ export class User extends BaseEntity {
     @Field(()=>[Review])
     @JoinColumn()
     @OneToMany(() => Review, (review: any) => review.creatorUser)
-    reviews!: Review[];
+    reviews?: Review[];
 
-    @Field(() => Service)
+    @Field(() => ID)
     @JoinColumn()
     @OneToOne(() => Service)
-    service!: Service;
+    service?: number;
     
     @Field(() => User)
     @JoinTable()
     @ManyToMany(() => User)
-    friends!: User;
+    friends?: User;
     
     @Field(()=> String)
     @Column()
     @CreateDateColumn({type:'timestamp'})
-    createdAt!:string;
+    createdAt?:string;
 
     @Field(()=> String)
     @Column()
     @CreateDateColumn({type:'timestamp'})
-    updateAt!:string;
+    updateAt?:string;
+
+    @Field(()=> UserStatusTypes)
+    @Column("text",{ nullable: true })
+    status!:UserStatusTypes;
 }

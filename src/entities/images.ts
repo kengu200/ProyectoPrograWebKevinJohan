@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, CreateDateColumn, ManyToOne, JoinColumn  } from 'typeorm';
 import { Field, Int, ObjectType } from "type-graphql";
 import { Service } from "./services";
 

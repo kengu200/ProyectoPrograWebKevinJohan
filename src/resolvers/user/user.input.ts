@@ -1,8 +1,13 @@
 import {
     Field,
     InputType,
+    ID
 } from "type-graphql";
-import { RolesTypes } from "../../entities/user"
+import { User,RolesTypes, UserStatusTypes } from "../../entities/user"
+import { Service } from '../../entities/services';
+import { Review } from '../../entities/review';
+
+
 
 @InputType({ description: "Editable user information" })
 export class UserInput {
@@ -14,6 +19,33 @@ export class UserInput {
 
     @Field(() => RolesTypes)
     role!: RolesTypes;
+}
+
+
+
+@InputType({ description: "Editable user information" })
+export class RegisterUserInput {
+
+    @Field()
+    name!: string;
+
+    @Field()
+    email!: string;
+
+    @Field()
+    password!: string;
+
+}
+
+@InputType()
+export class ValidateRegisterUserInput {
+
+    @Field()
+    email!: string;
+
+    @Field()
+    code!: string;
+
 }
 
 

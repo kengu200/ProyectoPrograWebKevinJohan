@@ -11,8 +11,8 @@ export class GMailService {
             secure: false,
             requireTLS: true,
             auth: {
-                user: '****@gmail.com',
-                pass: '*****'
+                user: 'johanpz9850@gmail.com',
+                pass: 'bzalbjcfizqlpcfb'
             }
         }
         );
