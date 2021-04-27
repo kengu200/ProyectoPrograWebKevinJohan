@@ -42,6 +42,8 @@ export class UserResolver {
     @Query(() => String)
     @UseMiddleware(isAuthenticated)
     async getId(@Ctx() { user }: Context) {
+        //console.log(JSON.stringify(user));
+
         return `Your user id : ${user!.id}`;
     }
 
