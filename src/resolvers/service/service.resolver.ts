@@ -32,13 +32,15 @@ export class ServiceResolver {
     @Mutation(() => Service)
     async updateService(
         @Ctx() { user }: Context,
-        @Arg("data", () => ServiceInput) data: ServiceInput
+        @Arg("serviceData", () => ServiceInput) data: ServiceInput
     ) {
         try {
-            await Service.update({ id: user?.service }, data);
-            const dataUpdated = await Service.findOne(user?.service);
+            console.log("aa");
+            await Service.update({ id: user?.serviceId }, data);
+            const dataUpdated = await Service.findOne(user?.serviceId);
             return dataUpdated;
         } catch (error) {
+            console.log(error);
             return false;
         }
 
@@ -49,11 +51,16 @@ export class ServiceResolver {
     async getOneService(
         @Ctx() { user }: Context
     ) {
-        return Service.findOne(user?.service);
+        try {
+            return Service.findOne(user?.serviceId);
+        } catch (error) {
+            console.log(error);
+        }
+        
     }
 
-    // @UseMiddleware(isAuthenticated)
     @Mutation(() => String)
+    @UseMiddleware(isAuthenticated)
     async registerService(
         @Arg("serviceData", () => ServiceInput) data: ServiceInput,
         @Ctx() { user }: Context
@@ -66,7 +73,7 @@ export class ServiceResolver {
             });
 
             const idNewService = newService.identifiers[0];
-            await User.update({ id: user?.id }, { service: Int.parseValue(idNewService) });
+            await User.update({ id: user?.id }, { serviceId: Int.parseValue(idNewService.id) });
 
         } catch (err) {
             return "false";
