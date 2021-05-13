@@ -48,5 +48,14 @@ export class ValidateRegisterUserInput {
 
 }
 
+@InputType()
+export class AddUserFriendInput {
+
+    @Field()
+    idFriend!: number;
+
+}
+
+
 
 

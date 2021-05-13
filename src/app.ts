@@ -3,8 +3,6 @@ import { ApolloServer } from 'apollo-server-express'
 
 import { buildSchema } from "type-graphql"
 
-//import { PingResolver } from "./resolvers/ping.resolver";
-//import { ProductResolver } from "./resolvers/product.resolver";
 import { UserResolver } from './resolvers/user/user.resolver';
 import { ServiceResolver } from './resolvers/service/service.resolver';
 import { isAuthorizated } from "./middleware/is-authorizated";

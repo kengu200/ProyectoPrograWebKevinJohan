@@ -7,8 +7,8 @@ async function main() {
     dotenv.config();
     connect();
     const app = await startServer();
-    app.listen(3000);
-    console.log("Server  Listening on http://localhost:"+ 3000);
+    app.listen(3006);
+    console.log("Server  Listening on http://localhost:"+ 3006);
     //Guti se la come
 }
 main();

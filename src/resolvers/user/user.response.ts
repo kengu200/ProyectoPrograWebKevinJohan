@@ -30,6 +30,17 @@ export class LoginUserOutput extends BaseResponse {
   token?: String;
 }
 
+@ObjectType()
+export class AddFriendUserOutput extends BaseResponse {
+  constructor(data: any) {
+    super();
+    this.message = data.message;
+    this.success = data.success;
+    this.description = data.description;
+  }
+
+}
+
 
 @ObjectType()
 export class RegisterUserOutput extends BaseResponse {
@@ -62,6 +73,21 @@ export class ValidateRegisterUserOutput extends BaseResponse {
 
   @Field({ nullable: true })
   token?: String;
+}
+
+@ObjectType()
+export class GetUserFriendsOutput extends BaseResponse {
+  constructor(data: any) {
+    super();
+    this.message = data.message;
+    this.success = data.success;
+    this.description = data.description;
+    this.data = data.data;
+  }
+
+  @Field(() => [User],{ nullable: true })
+  data?: User[];
+
 }
 
 

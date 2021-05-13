@@ -10,14 +10,16 @@ import {
 } from "type-graphql";
 import { hash, compare } from "bcryptjs";
 import { User, RolesTypes, UserStatusTypes } from "../../entities/user";
+import { Friends } from "../../entities/friends";
+import { getConnection, getManager, Not } from "typeorm"
 
 import enviroment from "../../config/enviroments.config";
 import { sign } from "jsonwebtoken";
 
 import { isAuthenticated } from "../../middleware/is-authenticated";
 import { Context } from "../../interfaces/context.interface";
-import { UserInput, RegisterUserInput, ValidateRegisterUserInput } from "./user.input"
-import { LoginUserOutput, RegisterUserOutput, ValidateRegisterUserOutput } from "./user.response";
+import { UserInput, RegisterUserInput, ValidateRegisterUserInput, AddUserFriendInput } from "./user.input"
+import { LoginUserOutput, RegisterUserOutput, ValidateRegisterUserOutput, AddFriendUserOutput, GetUserFriendsOutput } from "./user.response";
 import { GMailService } from '../mailer/mailer.resolver'
 import { CodConfirmationType } from '../utils/utils.resolver'
 
@@ -115,6 +117,7 @@ export class UserResolver {
          return {
             code:200,
             message:'Codigo Correcto', 
+            description:"Inicio de session Correcto",
             data:undefined,
             success:true, 
             token: sign({ user: user }, enviroment.jwtSecretKey, {
@@ -191,4 +194,81 @@ export class UserResolver {
         }
 
     }
+
+    
+    
+    @UseMiddleware(isAuthenticated)
+    @Mutation(() => ValidateRegisterUserOutput)
+    async addUserFriend(@Arg("InputData") data: AddUserFriendInput , @Ctx() { user }: Context):Promise<AddFriendUserOutput> {
+        const recordUser = await User.findOne({ where: { email:user?.email } });
+
+        if (!recordUser) {
+            throw new Error("Could not find user");
+        }
+
+        try {
+            await Friends.insert({
+                userId_1:user?.id,
+                userId_2:data.idFriend    
+            });
+
+            return {
+                code:200,
+                message:'Ahora son amigos',
+                success:true
+            }
+
+        } catch (err) {
+            console.log(err);
+            return {
+                code:1,
+                message:err,
+                success:false
+            }
+        }
+
+    }
+
+    @UseMiddleware(isAuthenticated)
+    @Query(() => GetUserFriendsOutput)
+    async getUserFriends(@Ctx() { user }: Context):Promise<GetUserFriendsOutput> {
+        try {
+            const recordUser = await User.findOne({ where: { email:user?.email } });
+
+            if (!recordUser) {
+                throw new Error("Could not find user");
+            }
+
+            const userFriends = await getManager().createQueryBuilder()
+            .select("*")
+            .from(User,"user")
+            .innerJoin(Friends,"friends")
+            .where("friends.userId_1 = :result",{
+                result: user?.id
+            }).orWhere("friends.userId_2 = :result",{
+                result: user?.id
+            }).andWhere("user.id = :result",{
+                result: Not(user?.id)
+            }).execute();
+
+            console.log(userFriends);
+            return {
+                code:200,
+                message:'Se obtuvieron amigos',
+                success:true,
+                data: userFriends
+            }
+
+        } catch (err) {
+            console.log(err);
+            return {
+                code:1,
+                message:err,
+                success:false
+            }
+        }
+    }
+
+    
+    
 }

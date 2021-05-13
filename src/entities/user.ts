@@ -45,7 +45,7 @@ export class User extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Authorized()
+    //@Authorized()
     @Field(() => String)
     @Column("text", { nullable: true })
     name!: string;
@@ -67,7 +67,7 @@ export class User extends BaseEntity {
     @Column("text", { nullable: true })
     expirationDate?: number;
 
-    @Authorized(RolesTypes.ADMIN)
+    //@Authorized(RolesTypes.ADMIN)
     @Field(() => RolesTypes)
     @Column("text", { nullable: true })
     role!: RolesTypes;
@@ -86,10 +86,10 @@ export class User extends BaseEntity {
     service?: Service;
 
 
-    @Field(() => User)
-    @JoinTable()
+    //@Field(() => [User])
+    @JoinTable({name:"friends"})
     @ManyToMany(() => User)
-    friends?: User;
+    friends?: User[];
 
     @Field(() => String)
     @Column()
