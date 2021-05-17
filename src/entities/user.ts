@@ -52,6 +52,10 @@ export class User extends BaseEntity {
 
     @Field(() => String)
     @Column("text", { nullable: true })
+    lastName!: string;
+
+    @Field(() => String)
+    @Column("text", { nullable: true })
     email!: string;
 
     @Field(() => String)
@@ -77,6 +81,7 @@ export class User extends BaseEntity {
     @OneToMany(() => Review, (review: any) => review.creatorUser)
     reviews?: Review[];
 
+    @Field(() => String)
     @Column({ nullable: true })
     serviceId?: number;
 

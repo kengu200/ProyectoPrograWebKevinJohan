@@ -43,10 +43,18 @@ export class Review extends BaseEntity {
     @ManyToOne(() => User, (user: any) => user.reviews)
     creatorUser!: User;
 
+    @Field()
+    @Column({ nullable: true })
+    creatorUserId!:number;
+
     @Field(() => Service)
     @JoinColumn()
     @ManyToOne(() => Service, (service: any) => service.review)
     service!: Service;
+
+    @Field()
+    @Column({ nullable: true })
+    serviceId?: number;
 
     @Field(() => StateReviews)
     @Column()

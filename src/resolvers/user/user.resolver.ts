@@ -233,7 +233,7 @@ export class UserResolver {
     @Query(() => GetUserFriendsOutput)
     async getUserFriends(@Ctx() { user }: Context):Promise<GetUserFriendsOutput> {
         try {
-            const recordUser = await User.findOne({ where: { email:user?.email } });
+            const recordUser = await User.findOne({ where: { id:user?.id } });
 
             if (!recordUser) {
                 throw new Error("Could not find user");
@@ -247,11 +247,9 @@ export class UserResolver {
                 result: user?.id
             }).orWhere("friends.userId_2 = :result",{
                 result: user?.id
-            }).andWhere("user.id = :result",{
-                result: Not(user?.id)
-            }).execute();
+            }).groupBy("user.id")
+            .execute();
 
-            console.log(userFriends);
             return {
                 code:200,
                 message:'Se obtuvieron amigos',

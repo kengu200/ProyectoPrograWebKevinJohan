@@ -35,6 +35,9 @@ export class RegisterUserInput {
     @Field()
     password!: string;
 
+    @Field()
+    lastName!: string;
+
 }
 
 @InputType()

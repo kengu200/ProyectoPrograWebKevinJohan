@@ -18,14 +18,38 @@ import { sign } from "jsonwebtoken";
 
 import { isAuthenticated } from "../../middleware/is-authenticated";
 import { Context } from "../../interfaces/context.interface";
-import { ServiceInput } from "./service.input"
-import { InsertResult } from "typeorm";
+import { ServiceInput, ReportServiceInput, GetServiceById } from "./service.input"
+import { GetUsersAndServiserOutput,ReportServiceOutput, GetServiceByIdOutput, GetReportedServicesOutput } from "./service.response"
+import { getManager, InsertResult } from "typeorm";
 
 @Resolver()
 export class ServiceResolver {
     @Query(() => [Service])
     async getAllServices() {
         return Service.find();
+    }
+
+    @Query(() => GetServiceByIdOutput)
+    async getServiceById(@Arg("serviceData", () => GetServiceById) data: GetServiceById):Promise<GetServiceByIdOutput> {
+        try{
+            const recordService = await Service.findOne({where:{id:data.serviceId}});
+            
+            return {
+                code:200,
+                message:'Se obtubieron servicios',
+                success:true,
+                data: recordService
+            }
+
+        }catch (error) {
+            return {
+                code:1,
+                message:'No se encontro el servicio',
+                success:false,
+                data: undefined
+            }
+        }
+ 
     }
 
     @UseMiddleware(isAuthenticated)
@@ -59,6 +83,44 @@ export class ServiceResolver {
         
     }
 
+    @Query(()=>GetUsersAndServiserOutput)
+    async getServicesAndUser(@Ctx() { user }: Context):Promise<GetUsersAndServiserOutput> {
+        try {
+            
+
+            const images = await Image.find();
+
+            console.log(JSON.stringify(images));
+
+
+            const userServices = await getManager().createQueryBuilder()
+            .select("user.name,user.lastName,user.email,user.serviceId,user.id,services.createdAt,services.title, services.description")
+            .from(User,"user")
+            .innerJoin(Service,"services","user.serviceId = services.id")
+            .execute();
+            
+
+            console.log(JSON.stringify(userServices));
+
+            return {
+                code:200,
+                message:'Se obtubieron servicios',
+                success:true,
+                data: userServices
+            }
+
+
+        } catch (error) {
+            return {
+                code:200,
+                message:'Se obtubieron servicios',
+                success:true,
+                data: undefined
+            }
+        }
+        
+    }
+
     @Mutation(() => String)
     @UseMiddleware(isAuthenticated)
     async registerService(
@@ -81,5 +143,79 @@ export class ServiceResolver {
 
 
         return true;
+    }
+
+
+    @Mutation(() => ReportServiceOutput)
+    @UseMiddleware(isAuthenticated)
+    async reportService(
+        @Arg("serviceData", () => ReportServiceInput) data: ReportServiceInput,
+        @Ctx() { user }: Context
+    ):Promise<ReportServiceOutput> {
+        try {
+
+            const recordService = await Service.findOne({ id:data.serviceId });
+
+            if (!recordService) {
+                throw new Error("Could not find service");
+            }
+
+            var reports = 0;
+            
+            if(recordService){
+                reports = recordService.reportCount +1;
+            }
+            
+
+            await Service.update({ id:data.serviceId }, {reportCount:reports});
+
+            return {
+                code:200,
+                message:'Se reporto el servicio',
+                success:true
+            };
+
+        } catch (err) {
+            console.log(err);
+            return {
+                code:1,
+                message:'No se pudo reportar el servicio',
+                success:false
+            }
+        }
+    }
+
+    @Query(()=>GetReportedServicesOutput)
+    async getReportedServices(@Ctx() { user }: Context):Promise<GetReportedServicesOutput> {
+        try {
+            
+            const userServices = await getManager().createQueryBuilder()
+            .select("services.createdAt,services.title,services.description,services.reportCount")
+            .from(User,"user")
+            .innerJoin(Service,"services","user.serviceId = services.id")
+            .where("services.reportCount > 0")
+            .orderBy("services.reportCount", "ASC")
+            .execute();
+            
+
+            console.log(JSON.stringify(userServices));
+
+            return {
+                code:200,
+                message:'Se obtubieron servicios',
+                success:true,
+                data: userServices
+            }
+
+
+        } catch (error) {
+            return {
+                code:200,
+                message:'Se obtubieron servicios',
+                success:true,
+                data: undefined
+            }
+        }
+        
     }
 }

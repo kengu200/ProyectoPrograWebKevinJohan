@@ -14,13 +14,17 @@ export class Image extends BaseEntity {
     title!: string;
 
     @Field()
-    @Column()
+    @Column({length: "100000"})
     url!: string;
 
     @Field(() => Service)
     @JoinColumn()
     @ManyToOne(() => Service, (service: any) => service.images)
     service!: Service;
+
+    @Field(() => String)
+    @Column({ nullable: true })
+    serviceId?: number;
 
     @Field()
     @CreateDateColumn({ type: 'timestamp' })
