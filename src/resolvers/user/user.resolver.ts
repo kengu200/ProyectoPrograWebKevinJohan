@@ -19,7 +19,7 @@ import { sign } from "jsonwebtoken";
 import { isAuthenticated } from "../../middleware/is-authenticated";
 import { Context } from "../../interfaces/context.interface";
 import { UserInput, RegisterUserInput, ValidateRegisterUserInput, AddUserFriendInput } from "./user.input"
-import { LoginUserOutput, RegisterUserOutput, ValidateRegisterUserOutput, AddFriendUserOutput, GetUserFriendsOutput } from "./user.response";
+import { LoginUserOutput, RegisterUserOutput, ValidateRegisterUserOutput, AddFriendUserOutput, GetUserFriendsOutput,IsAuthOutput, GetCurrentUserOutput } from "./user.response";
 import { GMailService } from '../mailer/mailer.resolver'
 import { CodConfirmationType } from '../utils/utils.resolver'
 
@@ -149,6 +149,16 @@ export class UserResolver {
         return true;
     }
 
+    @UseMiddleware(isAuthenticated)
+    @Query(() => IsAuthOutput)
+    async isAuth(@Ctx() { user }: Context):Promise<IsAuthOutput> {
+        return {
+            code:1,
+            message:"Estas logueado", 
+            success:true
+        }
+    }
+
     @Mutation(() => ValidateRegisterUserOutput)
     async validateRegisterCode(@Arg("InputData") data: ValidateRegisterUserInput):Promise<ValidateRegisterUserOutput> {
         const user = await User.findOne({ where: { email:data.email } });
@@ -255,6 +265,34 @@ export class UserResolver {
                 message:'Se obtuvieron amigos',
                 success:true,
                 data: userFriends
+            }
+
+        } catch (err) {
+            console.log(err);
+            return {
+                code:1,
+                message:err,
+                success:false
+            }
+        }
+    }
+
+    @UseMiddleware(isAuthenticated)
+    @Query(() => GetCurrentUserOutput)
+    async getCurrentUser(@Ctx() { user }: Context):Promise<GetCurrentUserOutput> {
+        try {
+            const recordUser = await User.findOne({ where: { id:user?.id } });
+
+            if (!recordUser) {
+                throw new Error("Could not find user");
+            }
+
+     
+            return {
+                code:200,
+                message:'Se obtuvo el usuario logueado',
+                success:true,
+                data: recordUser
             }
 
         } catch (err) {

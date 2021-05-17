@@ -41,6 +41,17 @@ export class AddFriendUserOutput extends BaseResponse {
 
 }
 
+@ObjectType()
+export class IsAuthOutput extends BaseResponse {
+  constructor(data: any) {
+    super();
+    this.message = data.message;
+    this.success = data.success;
+    this.description = data.description;
+  }
+
+}
+
 
 @ObjectType()
 export class RegisterUserOutput extends BaseResponse {
@@ -87,6 +98,21 @@ export class GetUserFriendsOutput extends BaseResponse {
 
   @Field(() => [User],{ nullable: true })
   data?: User[];
+
+}
+
+@ObjectType()
+export class GetCurrentUserOutput extends BaseResponse {
+  constructor(data: any) {
+    super();
+    this.message = data.message;
+    this.success = data.success;
+    this.description = data.description;
+    this.data = data.data;
+  }
+
+  @Field(() => User,{ nullable: true })
+  data?: User;
 
 }
 

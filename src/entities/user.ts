@@ -106,7 +106,7 @@ export class User extends BaseEntity {
     @CreateDateColumn({ type: 'timestamp' })
     updateAt?: string;
 
-    @Field(() => UserStatusTypes)
+    @Field(() => UserStatusTypes,{nullable:true})
     @Column("text", { nullable: true })
-    status!: UserStatusTypes;
+    status?: UserStatusTypes;
 }

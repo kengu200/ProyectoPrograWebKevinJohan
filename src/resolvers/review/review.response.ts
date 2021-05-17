@@ -6,7 +6,7 @@ import {
 import { BaseResponse} from '../../entities/baseResponse';
 import { User,RolesTypes } from '../../entities/user';
 import { Service } from '../../entities/services';
-import { Review } from '../../entities/review';
+import { Review, StateReviews } from '../../entities/review';
 
 @ObjectType()
 export class AddServiceReviewOutput extends BaseResponse {
@@ -24,6 +24,49 @@ export class AddServiceReviewOutput extends BaseResponse {
 
 }
 
+
+
+@ObjectType()
+export class ServiceReviewData{
+
+    @Field()
+    id!: number;
+
+    @Field()
+    description!: string;
+
+    @Field()
+    rating!: number;
+
+    @Field(() => User)
+    creatorUser!: User;
+
+    @Field()
+    creatorUserId!:number;
+
+    @Field(() => Service)
+    service!: Service;
+
+    @Field()
+    serviceId?: number;
+
+    @Field(() => StateReviews)
+    state!: StateReviews;
+
+    @Field()
+    createdAt!: string;
+
+    @Field()
+    updatedAt!: string;
+
+    @Field()
+    name!: string;
+
+    @Field()
+    lastName!: string;
+
+}
+
 @ObjectType()
 export class GetServiceReviewsOutput extends BaseResponse {
   constructor(data: any) {
@@ -35,7 +78,7 @@ export class GetServiceReviewsOutput extends BaseResponse {
 
   }
 
-  @Field(type => [Review],{ nullable: true })
-  data?: Review[];
+  @Field(type => [ServiceReviewData],{ nullable: true })
+  data?: ServiceReviewData[];
 
 }

@@ -65,7 +65,19 @@ export class ReviewResolver {
     async getServiceReviews(@Ctx() { user }: Context, @Arg("serviceData", () => GetServiceReviewsInput) data: GetServiceReviewsInput):Promise<GetServiceReviewsOutput> {
         try {
             
-            const recordReviews = await Review.find({where:{serviceId:data.serviceId}});
+            //const recordReviews = await Review.find({where:{serviceId:data.serviceId}});
+
+
+            const recordReviews = await getManager().createQueryBuilder()
+            .select("reviews.id,reviews.description,reviews.createdAt,reviews.serviceId,reviews.rating,reviews.creatorUserId,user.name,user.lastName")
+            .from(Review,"reviews")
+            .innerJoin(User,"user","user.id = reviews.creatorUserId")
+            .where("reviews.serviceId= :result",{
+                result: data.serviceId
+            })
+            .execute();
+
+            console.log(recordReviews);
 
             if(!recordReviews){
                 throw new Error("Could not find reviews");
