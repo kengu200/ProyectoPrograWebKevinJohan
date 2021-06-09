@@ -50,7 +50,7 @@ export class User extends BaseEntity {
     @Column("text", { nullable: true })
     name!: string;
 
-    @Field(() => String)
+    @Field(() => String,{nullable:true,defaultValue:"Gutierrez"})
     @Column("text", { nullable: true })
     lastName!: string;
 

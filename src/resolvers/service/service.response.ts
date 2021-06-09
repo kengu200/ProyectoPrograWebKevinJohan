@@ -17,7 +17,7 @@ export class UsersAndServicesData{
     @Field(() => String)
     name!: string;
 
-    @Field(() => String)
+    @Field(() => String, {nullable:true})
     lastName!: string;
 
     @Field(() => String)
