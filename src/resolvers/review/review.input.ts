@@ -29,3 +29,18 @@ export class GetServiceReviewsInput {
     serviceId!:number;
 
 }
+
+
+@InputType()
+export class ResponseRerviewInput {
+
+    @Field()
+    description!: string;
+
+    @Field()
+    rating!: number;
+
+    @Field()
+    reviewId!:number;
+
+}

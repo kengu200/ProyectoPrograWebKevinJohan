@@ -17,6 +17,7 @@ export async function startServer() {
         context: ({ req, res }) => ({ req, res }),
 
     });
+    app.use('/graphql', express.json({limit: '50mb'}));
     server.applyMiddleware({ app, path: '/graphql' });
     return app;
 }

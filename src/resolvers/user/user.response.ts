@@ -1,10 +1,13 @@
 import {
     Field,
     ObjectType,
+    ID
 } from "type-graphql";
 import { BaseResponse} from '../../entities/baseResponse';
 import { User } from '../../entities/user'
-
+import { Service } from "../../entities/services";
+import { Image } from "../../entities/images";
+import { Review } from "../../entities/review";
 
 @ObjectType()
 export class LoginResponseData {
@@ -115,6 +118,125 @@ export class GetCurrentUserOutput extends BaseResponse {
   data?: User;
 
 }
+
+@ObjectType()
+export class GetUserByIdOutput extends BaseResponse {
+  constructor(data: any) {
+    super();
+    this.message = data.message;
+    this.success = data.success;
+    this.description = data.description;
+    this.data = data.data;
+  }
+
+  @Field(() => User,{ nullable: true })
+  data?: User;
+
+}
+
+
+
+@ObjectType()
+export class GetAllUsersReportOutput extends BaseResponse {
+  constructor(data: any) {
+    super();
+    this.message = data.message;
+    this.success = data.success;
+    this.description = data.description;
+    this.data = data.data;
+  }
+
+  @Field(() => [User],{ nullable: true })
+  data?: User[];
+
+}
+
+
+
+@ObjectType()
+export class UsersProfileData{
+    @Field(() => ID)
+    id!: number;
+
+    @Field(() => String)
+    name!: string;
+
+    @Field(() => String, {nullable:true})
+    lastName!: string;
+
+    @Field(() => String)
+    email!: string;
+
+
+    @Field(() => [Review],{nullable:true})
+    reviews?: Review[];
+
+    @Field(() => String,{nullable:true})
+    serviceId?: number;
+
+    @Field(() => Service,{nullable:true})
+    service?: Service;
+
+    @Field(() => String)
+    createdAt!: string;
+
+    @Field(() => String,{nullable:true})
+    title!: string;
+
+    @Field(() => String,{nullable:true})
+    description!: string;
+
+    @Field(() => String,{nullable:true})
+    url!: string;
+}
+
+@ObjectType()
+export class GetUserProfileOutput extends BaseResponse {
+  constructor(data: any) {
+    super();
+    this.message = data.message;
+    this.success = data.success;
+    this.description = data.description;
+    this.data = data.data;
+  }
+
+  @Field(() => [UsersProfileData],{ nullable: true })
+  data?: UsersProfileData[];
+
+}
+
+@ObjectType()
+export class IsUserFriendOutput extends BaseResponse {
+  constructor(data: any) {
+    super();
+    this.message = data.message;
+    this.success = data.success;
+    this.description = data.description;
+    this.data = data.data;
+  }
+
+  @Field({ nullable: true })
+  data!: boolean;
+
+}
+
+@ObjectType()
+export class UpdateUserOutput extends BaseResponse {
+  constructor(data: any) {
+    super();
+    this.message = data.message;
+    this.success = data.success;
+    this.description = data.description;
+    this.data = data.data;
+  }
+
+  @Field({ nullable: true })
+  data?:User;
+
+}
+
+
+
 
 
 

@@ -9,16 +9,43 @@ import { Review } from '../../entities/review';
 
 
 
+
 @InputType({ description: "Editable user information" })
 export class UserInput {
-    @Field({ nullable: true })
-    name?: string
+
+    //@Authorized()
+    @Field()
+    name!: string;
+
+    @Field({nullable:true,defaultValue:"Gutierrez"})
+    lastName!: string;
+
+    @Field(() => RolesTypes,{nullable:true})
+    role!: RolesTypes;
+
+    @Field(() => UserStatusTypes,{nullable:true})
+    status?: UserStatusTypes;
+}
+
+@InputType()
+export class UpdateUserByIdInput {
 
     @Field()
-    notes!: string;
+    idUser!: number;
 
-    @Field(() => RolesTypes)
-    role!: RolesTypes;
+    @Field(()=>UserInput)
+    userData!:UserInput;
+
+}
+
+
+@InputType()
+export class LikesData {
+
+    @Field()
+    tag!: string;
+
+
 }
 
 
@@ -38,6 +65,10 @@ export class RegisterUserInput {
     @Field()
     lastName!: string;
 
+
+    @Field(()=>[LikesData],{nullable:true})
+    likesList!: LikesData[];
+
 }
 
 @InputType()
@@ -56,6 +87,39 @@ export class AddUserFriendInput {
 
     @Field()
     idFriend!: number;
+
+}
+
+
+@InputType()
+export class IsFriendInput {
+
+    @Field()
+    idUser!: number;
+
+}
+
+@InputType()
+export class DeleteFriendInput {
+
+    @Field()
+    idUser!: number;
+
+}
+
+@InputType()
+export class GetUserByIdInput {
+
+    @Field()
+    idUser!: number;
+
+}
+
+@InputType()
+export class GetUserProfileByIdInput {
+
+    @Field()
+    idUser!: number;
 
 }
 

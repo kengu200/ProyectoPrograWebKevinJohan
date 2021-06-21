@@ -14,7 +14,7 @@ export class Image extends BaseEntity {
     title!: string;
 
     @Field()
-    @Column({length: "100000"})
+    @Column()
     url!: string;
 
     @Field(() => Service)

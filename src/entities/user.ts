@@ -67,6 +67,11 @@ export class User extends BaseEntity {
     @Column("text", { nullable: true })
     code?: string;
 
+
+    @Field()
+    @Column("text", { nullable: true })
+    likes?: string;
+
     @Field()
     @Column("text", { nullable: true })
     expirationDate?: number;

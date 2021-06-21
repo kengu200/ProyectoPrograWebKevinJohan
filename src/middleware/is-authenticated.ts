@@ -24,3 +24,28 @@ export const isAuthenticated: MiddlewareFn<Context> = ({ context }, next) => {
   }
   return next();
 };
+
+export const isAppUser: MiddlewareFn<Context> = ({ context }, next) => {
+
+  const authorization = context.req.headers["authorization"];
+  const bearer_prefix = "Bearer ";
+
+  if (!authorization) {
+    console.log("No esta auth");
+  }
+
+  if(authorization){
+    try {
+      const token = authorization.replace(bearer_prefix, "");
+      const payload:any = verify(token, enviroment.jwtSecretKey ?? '');
+      context.user = payload.user as User;
+    } catch (err) {
+      
+    }
+    return next();
+
+  }
+
+  return next();
+
+};

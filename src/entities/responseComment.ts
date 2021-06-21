@@ -2,16 +2,15 @@ import { Entity, JoinColumn, Column, PrimaryGeneratedColumn, BaseEntity, CreateD
 import { Field, Int, ObjectType, registerEnumType } from "type-graphql";
 import { User } from "./user";
 import { Service } from "./services";
-import { ResponseComment } from "./responseComment";
+import { Review } from "./review";
 
-
-export enum StateReviews {
+export enum StateResponse {
     ACTIVE = "ACTIVE",
     INACTIVE = "INACTIVE",
 }
 
-registerEnumType(StateReviews, {
-    name: "StateReviews",
+registerEnumType(StateResponse, {
+    name: "StateResponse",
     description: "Reviews state",
     valuesConfig: {
         ACTIVE: {
@@ -26,7 +25,7 @@ registerEnumType(StateReviews, {
 
 @ObjectType()
 @Entity()
-export class Review extends BaseEntity {
+export class ResponseComment extends BaseEntity {
     @Field()
     @PrimaryGeneratedColumn()
     id!: number;
@@ -35,36 +34,28 @@ export class Review extends BaseEntity {
     @Column()
     description!: string;
 
-    @Field()
-    @Column("int", { default: 0 })
-    rating!: number;
-
     @Field(() => User)
     @JoinColumn()
     @ManyToOne(() => User, (user: any) => user.reviews)
     creatorUser!: User;
 
+    @Field(() => Review)
+    @JoinColumn()
+    @ManyToOne(() => Review, (review: any) => review.responses)
+    creatorReview!: Review;
+
     @Field()
     @Column({ nullable: true })
     creatorUserId!:number;
 
-    @Field(() => Service)
-    @JoinColumn()
-    @ManyToOne(() => Service, (service: any) => service.review)
-    service!: Service;
-
-    @Field(() => [ResponseComment])
-    @JoinColumn()
-    @OneToMany(() => ResponseComment, (ResponseComment: any) => ResponseComment.creatorReview)
-    responses?: ResponseComment[];
-
     @Field()
     @Column({ nullable: true })
-    serviceId?: number;
+    creatorReviewId!:number;
 
-    @Field(() => StateReviews)
+
+    @Field(() => StateResponse)
     @Column()
-    state!: StateReviews;
+    state!: StateResponse;
 
 
     @Field()
@@ -76,6 +67,3 @@ export class Review extends BaseEntity {
     updatedAt!: string;
 
 }
-
-
-

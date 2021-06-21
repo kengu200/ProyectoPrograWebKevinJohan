@@ -7,6 +7,7 @@ import { BaseResponse} from '../../entities/baseResponse';
 import { User,RolesTypes } from '../../entities/user';
 import { Service } from '../../entities/services';
 import { Review } from '../../entities/review';
+import { Image } from '../../entities/images';
 
 
 @ObjectType()
@@ -40,6 +41,16 @@ export class UsersAndServicesData{
 
     @Field(() => String)
     description!: string;
+
+    @Field(() => String)
+    likes!: string;
+
+    @Field(() => String,{nullable:true})
+    url!: string;
+
+    @Field(() => [Image],{nullable:true})
+    images!: Image[];
+
 
 }
 
@@ -102,5 +113,32 @@ export class GetReportedServicesOutput extends BaseResponse {
 
     @Field(type => [Service],{ nullable: true })
     data?: [Service];
+
+}
+
+
+@ObjectType()
+export class GetAllServicesreport{
+
+    @Field()
+    count!: number;
+    
+    @Field(type => [Service],{ nullable: true })
+    services?: Service[];
+
+}
+
+@ObjectType()
+export class GetAllServicesreportOutput extends BaseResponse {
+    constructor(data: any) {
+        super();
+        this.message = data.message;
+        this.success = data.success;
+        this.description = data.description;
+        this.data = data.data;
+    }
+
+    @Field(type => GetAllServicesreport,{ nullable: true })
+    data?: GetAllServicesreport;
 
 }

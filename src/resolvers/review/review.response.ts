@@ -7,6 +7,7 @@ import { BaseResponse} from '../../entities/baseResponse';
 import { User,RolesTypes } from '../../entities/user';
 import { Service } from '../../entities/services';
 import { Review, StateReviews } from '../../entities/review';
+import { ResponseComment } from '../../entities/responseComment';
 
 @ObjectType()
 export class AddServiceReviewOutput extends BaseResponse {
@@ -19,11 +20,67 @@ export class AddServiceReviewOutput extends BaseResponse {
 
   }
 
-  @Field(type => Review,{ nullable: true })
-  data?: Review;
+  @Field(type => ResponseComment ,{ nullable: true })
+  data?: ResponseComment;
 
 }
 
+@ObjectType()
+export class AddResponseReviewOutput extends BaseResponse {
+  constructor(data: any) {
+    super();
+    this.message = data.message;
+    this.success = data.success;
+    this.description = data.description;
+    this.data = data.data;
+
+  }
+
+  @Field(type => ResponseComment,{ nullable: true })
+  data?: ResponseComment;
+
+}
+
+
+
+@ObjectType()
+export class ResponseCommentData{
+
+  @Field()
+  id!: number;
+  
+  @Field()
+  description!: string;
+
+  @Field(() => User)
+  creatorUser!: User;
+
+  @Field()
+  creatorUserId!:number;
+
+  @Field(() => Service)
+  service!: Service;
+
+  @Field()
+  serviceId?: number;
+
+  @Field(() => StateReviews)
+  state!: StateReviews;
+
+  @Field()
+  createdAt!: string;
+
+  @Field()
+  updatedAt!: string;
+
+  @Field()
+  name!: string;
+
+  @Field()
+  lastName!: string;
+
+
+}
 
 
 @ObjectType()
@@ -64,6 +121,9 @@ export class ServiceReviewData{
 
     @Field()
     lastName!: string;
+
+    @Field(type=>[ResponseCommentData],{nullable:true})
+    responses?:ResponseCommentData[];
 
 }
 

@@ -39,4 +39,9 @@ export class Service extends BaseEntity{
     @Field()
     @CreateDateColumn({type:'timestamp'})
     updatedAt?:string;
+
+    @Field()
+    @Column("text", { nullable: true })
+    likes?: string;
+
 }
